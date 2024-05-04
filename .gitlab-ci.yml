@@ -1,0 +1,29 @@
+image: node:latest
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - mkdir public
+    - npm i | node badge.js > public/vulnerabilities.svg
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: always
+    paths:
+      - node_modules/
+      - public/vulnerabilities.svg
+
+deploy:
+  stage: deploy
+  needs:
+    - build
+  script:
+    - npm config set //registry.npmjs.org/:_authToken=${NPM}
+  only:
+    - main
