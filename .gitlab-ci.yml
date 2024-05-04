@@ -30,9 +30,7 @@ release:
     - npm install -g semantic-release @semantic-release/gitlab
     - npm i -g typescript
   script:
-    - semantic-release
     - tsc
-    - npm config set //registry.npmjs.org/:_authToken=${NPM}
-    - npm publish
+    - semantic-release
   only:
     - main
