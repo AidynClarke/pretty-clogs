@@ -9,6 +9,8 @@ build:
   script:
     - mkdir public
     - npm i | node badge.js > public/vulnerabilities.svg
+    - npm i -g typescript
+    - tsc
   cache:
     paths:
       - node_modules/
@@ -24,6 +26,9 @@ deploy:
   needs:
     - build
   script:
+    - npm i -g typescript
+    - tsc
     - npm config set //registry.npmjs.org/:_authToken=${NPM}
+    - npm publish
   only:
     - main
