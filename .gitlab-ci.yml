@@ -27,7 +27,7 @@ release:
     - build
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
-    - npm install -g semantic-release @semantic-release/gitlab
+    - npm install -g semantic-release @semantic-release/gitlab @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/npm @semantic-release/git
     - npm i -g typescript
   script:
     - tsc
