@@ -75,3 +75,4 @@ const c = (function (oldCons) {
 })(global.console);
 
 global.console = c as any;
+
