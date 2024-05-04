@@ -6,11 +6,20 @@ stages:
 release:
   stage: release
   before_script:
+    - npm i
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install -g semantic-release @semantic-release/gitlab @semantic-release/git
     - npm i -g typescript
   script:
     - tsc
     - semantic-release
+  cache:
+    paths:
+      - node_modules/
+  artifacts:
+    expire_in: 1 days
+    when: always
+    paths:
+      - node_modules/
   only:
     - main
