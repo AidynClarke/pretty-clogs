@@ -1,1 +1,9 @@
-npm.cmd run lint
+npmExec=""
+
+if [ -f "C:/Program Files/nodejs/npm.cmd" ]; then
+  npmExec="npm.cmd"
+else
+  npmExec="npm"
+fi
+
+eval "$npmExec run lint"
