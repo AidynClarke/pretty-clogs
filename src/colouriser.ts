@@ -1,19 +1,6 @@
-import { Colours, Condition, getRandomColour } from './colour';
+import { Colours, ColourKeys, Condition, getRandomColour } from './colour';
 
 type LogTypes = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
-
-export class XIDColouriser {
-  private static xidColours: Record<string, (text: string) => string> = {};
-
-  public static colouriseXID(xid: string) {
-    if (!this.xidColours[xid]) this.xidColours[xid] = Colouriser.getRandomColour();
-    return this.xidColours[xid](xid);
-  }
-
-  public static deleteXID(xid: string) {
-    delete this.xidColours[xid];
-  }
-}
 
 export default class Colouriser {
   private static readonly allowedRandomColours: Condition[] = [
@@ -75,7 +62,7 @@ export default class Colouriser {
     return Colours.BOLD(str);
   }
 
-  public static colouriseValue<T>(value: T, ...colours: Colours[]): string {
+  public static colouriseValue<T>(value: T, ...colours: ColourKeys[]): string {
     if (colours.length > 0) {
       let str: string = `${value}`;
       for (const colour of colours) str = Colours[colour](str);

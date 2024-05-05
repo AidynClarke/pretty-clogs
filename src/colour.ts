@@ -36,7 +36,7 @@ export const Colours = {
   BG_GRAY: (text: Primitives) => `\x1b[100m${text}${RESET}`
 };
 
-export type Colours = keyof typeof Colours;
+export type ColourKeys = keyof typeof Colours;
 
 export type Condition = {
   type: 'matches' | 'includes' | 'does-not-match' | 'does-not-include';
