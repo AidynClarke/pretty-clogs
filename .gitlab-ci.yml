@@ -6,8 +6,8 @@ stages:
 release:
   stage: release
   before_script:
-    - npm ci --only=production --ignore-scripts
-    - npm i
+    - npm set-script prepare ""
+    - npm ci --only=production
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install -g semantic-release @semantic-release/gitlab @semantic-release/git
     - npm i -g typescript
