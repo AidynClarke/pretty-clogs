@@ -6,8 +6,8 @@ stages:
 release:
   stage: release
   before_script:
-    - npm set-script prepare ""
-    - npm ci --only=production
+    - export HUSKY_SKIP_INSTALL=1
+    - npm i
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install -g semantic-release @semantic-release/gitlab @semantic-release/git
     - npm i -g typescript
