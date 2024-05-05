@@ -7,3 +7,5 @@ Simple Node.js package that makes the output of console.(log | info | warn | err
 ## Usage
 
 Ensure to import at the top of your main js file (index.js / app.js / index.ts / app.ts)
+
+Setting the environment variable "ENV" to "dev" will activate the pretty formatting

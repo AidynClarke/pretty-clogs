@@ -3,7 +3,6 @@ import XIDColouriser from './xid_colouriser';
 
 let cwd = process.cwd();
 if (cwd[0] === 'C') cwd = cwd.slice(1);
-
 function formatDirectory(dir: string) {
   let formattedDir = dir;
   if (!formattedDir) return '';
@@ -45,32 +44,34 @@ function formatArgs(args: any[]) {
   return formattedArgs;
 }
 
-const c = ((oldCons) => ({
-  log: (ctx: string, ...args: any[]) => {
-    oldCons.log(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('DEBUG')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  },
+if (process.env.ENV === 'dev') {
+  const c = ((oldCons) => ({
+    log: (ctx: string, ...args: any[]) => {
+      oldCons.log(
+        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('DEBUG')} (${XIDColouriser.colouriseXID(ctx)})`,
+        ...formatArgs(args)
+      );
+    },
 
-  info(ctx: string, ...args: any[]) {
-    oldCons.info(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('INFO')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  },
-  warn(ctx: string, ...args: any[]) {
-    oldCons.warn(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('WARN')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  },
-  error(ctx: string, ...args: any[]) {
-    oldCons.error(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('ERROR')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  }
-}))(global.console);
+    info(ctx: string, ...args: any[]) {
+      oldCons.info(
+        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('INFO')} (${XIDColouriser.colouriseXID(ctx)})`,
+        ...formatArgs(args)
+      );
+    },
+    warn(ctx: string, ...args: any[]) {
+      oldCons.warn(
+        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('WARN')} (${XIDColouriser.colouriseXID(ctx)})`,
+        ...formatArgs(args)
+      );
+    },
+    error(ctx: string, ...args: any[]) {
+      oldCons.error(
+        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('ERROR')} (${XIDColouriser.colouriseXID(ctx)})`,
+        ...formatArgs(args)
+      );
+    }
+  }))(global.console);
 
-global.console = c as any;
+  global.console = c as any;
+}
