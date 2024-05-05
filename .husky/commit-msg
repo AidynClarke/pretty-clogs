@@ -6,4 +6,4 @@ else
   npxExec="npx"
 fi
 
-npx.cmd --no -- commitlint --edit \
+eval $npxExec --no -- commitlint --edit \
