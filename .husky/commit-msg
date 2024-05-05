@@ -1,1 +1,9 @@
+npxExec=""
+
+if [ -f "C:/Program Files/nodejs/npx.cmd" ]; then
+  npxExec="npx.cmd"
+else
+  npxExec="npx"
+fi
+
 npx.cmd --no -- commitlint --edit \
