@@ -1,77 +1,24 @@
-import Colouriser from './colouriser';
-import XIDColouriser from './xid_colouriser';
+import { deepCopy } from './helpers';
+import { Config, initLogger } from './logger';
+import { DeepPartial } from './types';
 
-let cwd = process.cwd();
-if (cwd[0] === 'C') cwd = cwd.slice(1);
-function formatDirectory(dir: string) {
-  let formattedDir = dir;
-  if (!formattedDir) return '';
+const defaultConfig: Config = {
+  enableXID: false
+};
 
-  while (formattedDir.includes('\\')) {
-    formattedDir = formattedDir.replace('\\', '/');
+function parseConfig<T extends object>(_default: T, input?: DeepPartial<T>): T {
+  const parsedConfig = deepCopy(_default);
+  if (!input) return parsedConfig;
+
+  const keys = Object.keys(input) as (keyof typeof input)[];
+  for (const key of keys) {
+    if (input[key] !== undefined) parsedConfig[key as keyof T] = input[key] as never;
   }
-
-  if (formattedDir[formattedDir.length - 1] === ')') formattedDir = formattedDir.slice(0, formattedDir.length - 1);
-  if (formattedDir[0] === '/') formattedDir = formattedDir.slice(1);
-
-  return formattedDir;
+  return parsedConfig;
 }
 
-function getLogLocation(err: Error): string | undefined {
-  const traceStack = err.stack;
-
-  if (traceStack === undefined) return;
-
-  const traceobj = formatDirectory(traceStack.split('\n')[2].split(cwd)[1]).split(':');
-  const file = traceobj[0];
-
-  const line = traceobj[1];
-  const column = traceobj[2];
-
-  return `${file}:${line}:${column}`;
-}
-
-function getTimeStamp(): string {
-  return new Date().toLocaleTimeString().toUpperCase();
-}
-
-function formatArgs(args: any[]) {
-  const formattedArgs: any[] = [];
-
-  for (const arg of args) {
-    formattedArgs.push(Colouriser.colouriseValue(arg));
+export default class Logger {
+  public static init(config?: DeepPartial<Config>) {
+    initLogger(global.console, parseConfig(defaultConfig, config));
   }
-  return formattedArgs;
-}
-
-if (process.env.ENV === 'dev') {
-  const c = ((oldCons) => ({
-    log: (ctx: string, ...args: any[]) => {
-      oldCons.log(
-        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('DEBUG')} (${XIDColouriser.colouriseXID(ctx)})`,
-        ...formatArgs(args)
-      );
-    },
-
-    info(ctx: string, ...args: any[]) {
-      oldCons.info(
-        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('INFO')} (${XIDColouriser.colouriseXID(ctx)})`,
-        ...formatArgs(args)
-      );
-    },
-    warn(ctx: string, ...args: any[]) {
-      oldCons.warn(
-        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('WARN')} (${XIDColouriser.colouriseXID(ctx)})`,
-        ...formatArgs(args)
-      );
-    },
-    error(ctx: string, ...args: any[]) {
-      oldCons.error(
-        `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('ERROR')} (${XIDColouriser.colouriseXID(ctx)})`,
-        ...formatArgs(args)
-      );
-    }
-  }))(global.console);
-
-  global.console = c as any;
 }
