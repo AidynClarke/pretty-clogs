@@ -8,6 +8,7 @@ test:
   stage: test
   coverage: "/All files[^|]*\\|[^|]*\\s+([\\d\\.]+)/"
   script:
+    - npm i
     - npm run lint
     - npm run test:ci
   artifacts:
