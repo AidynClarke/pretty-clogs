@@ -1,11 +1,7 @@
+import { Colours } from './colour';
 import { deepCopy } from './helpers';
-import { Config, initLogger } from './logger';
+import { Config, defaultConfig, initLogger } from './logger';
 import { DeepPartial } from './types';
-
-const defaultConfig: Config = {
-  enableXID: false,
-  logLevels: ['error', 'warn', 'info', 'log']
-};
 
 function parseConfig<T extends object>(_default: T, input?: DeepPartial<T>): T {
   const parsedConfig = deepCopy(_default);
@@ -20,6 +16,8 @@ function parseConfig<T extends object>(_default: T, input?: DeepPartial<T>): T {
 
 export default class Logger {
   public static init(config?: DeepPartial<Config>) {
-    initLogger(global.console, parseConfig(defaultConfig, config));
+    const parsedConfig = parseConfig(defaultConfig, config);
+    if (!parsedConfig.enableColours) Colours.setConfig({ noColour: true });
+    global.console = initLogger(global.console, parsedConfig);
   }
 }

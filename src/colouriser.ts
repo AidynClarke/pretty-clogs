@@ -1,6 +1,5 @@
 import { Colours, ColourKeys, Condition, getRandomColour } from './colour';
-
-type LogTypes = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+import { LogLevel } from './types';
 
 export default class Colouriser {
   private static readonly allowedRandomColours: Condition[] = [
@@ -14,11 +13,11 @@ export default class Colouriser {
     return getRandomColour(...this.allowedRandomColours);
   }
 
-  public static colouriseLogType(type: LogTypes): string {
-    if (type === 'DEBUG') return Colours.FG_MAGENTA(type);
-    if (type === 'INFO') return Colours.FG_BLUE_BRIGHT(type);
-    if (type === 'WARN') return Colours.FG_YELLOW_BRIGHT(type);
-    if (type === 'ERROR') return Colours.FG_RED_BRIGHT(type);
+  public static colouriseLogType(type: LogLevel): string {
+    if (type === 'log') return Colours.FG_MAGENTA(type.toUpperCase());
+    if (type === 'info') return Colours.FG_BLUE_BRIGHT(type.toUpperCase());
+    if (type === 'warn') return Colours.FG_YELLOW_BRIGHT(type.toUpperCase());
+    if (type === 'error') return Colours.FG_RED_BRIGHT(type.toUpperCase());
     return type;
   }
 
@@ -75,8 +74,9 @@ export default class Colouriser {
   private static _colouriseValue<T>(value: T, depth: number): string {
     if (value === undefined || value === null) return Colours.FG_GRAY('null');
     if (typeof value === 'string') {
-      if (value.toLowerCase().includes('invalid')) return Colours.FG_RED_BRIGHT(`${value}`);
-      return Colours.FG_BLUE_BRIGHT(`'${value}'`);
+      const strVal = depth === 1 ? value : `'${value}'`;
+      if (value.toLowerCase().includes('invalid')) return Colours.FG_RED_BRIGHT(strVal);
+      return Colours.FG_BLUE_BRIGHT(strVal);
     }
     if (typeof value === 'number') return Colours.FG_YELLOW_BRIGHT(value);
     if (typeof value === 'boolean') return Colours.FG_MAGENTA_BRIGHT(value.toString());
@@ -90,7 +90,7 @@ export default class Colouriser {
   private static colouriseObject<T extends object | unknown[]>(obj: T, depth: number): string {
     const entries = Object.entries(obj);
     if (entries.length === 0) return '{}';
-    if (entries.length === 1) return `{${Colours.BOLD(entries[0][0])}: ${this._colouriseValue(entries[0][1], depth + 1)}}`;
+    if (entries.length === 1) return `{ ${Colours.BOLD(entries[0][0])}: ${this._colouriseValue(entries[0][1], depth + 1)} }`;
 
     let str = '{\n';
 
@@ -105,9 +105,9 @@ export default class Colouriser {
     const { length } = arr;
     let str = `(${length} items) [`;
 
-    if (length === 0) return `${str}]`;
+    if (length === 0) return ` ${str} ]`;
 
-    if (length === 1) return `${str}${this._colouriseValue(arr[0], 1)},]`;
+    if (length === 1) return ` ${str}${this._colouriseValue(arr[0], 1)}, ]`;
 
     str += '\n';
     for (const value of arr) str += `${this.getTabs(depth)}${this._colouriseValue(value, depth + 1)},\n`;

@@ -1,42 +1,53 @@
+/* eslint-disable @typescript-eslint/lines-between-class-members */
 const RESET = '\x1b[0m';
 
 type Primitives = string | number | boolean;
 
-export const Colours = {
-  BOLD: (text: Primitives) => `\x1b[1m${text}${RESET}`,
-  DIM: (text: Primitives) => `\x1b[2m${text}${RESET}`,
-  UNDERSCORE: (text: Primitives) => `\x1b[4m${text}${RESET}`,
-  BLINK: (text: Primitives) => `\x1b[5m${text}${RESET}`,
-  REVERSE: (text: Primitives) => `\x1b[7m${text}${RESET}`,
-  HIDDEN: (text: Primitives) => `\x1b[8m${text}${RESET}`,
-  FG_BLACK: (text: Primitives) => `\x1b[30m${text}${RESET}`,
-  FG_RED: (text: Primitives) => `\x1b[31m${text}${RESET}`,
-  FG_GREEN: (text: Primitives) => `\x1b[32m${text}${RESET}`,
-  FG_YELLOW: (text: Primitives) => `\x1b[33m${text}${RESET}`,
-  FG_BLUE: (text: Primitives) => `\x1b[34m${text}${RESET}`,
-  FG_MAGENTA: (text: Primitives) => `\x1b[35m${text}${RESET}`,
-  FG_CYAN: (text: Primitives) => `\x1b[36m${text}${RESET}`,
-  FG_WHITE: (text: Primitives) => `\x1b[37m${text}${RESET}`,
-  FG_GRAY: (text: Primitives) => `\x1b[90m${text}${RESET}`,
-  FG_RED_BRIGHT: (text: Primitives) => `\x1b[31m${text}${RESET}`,
-  FG_GREEN_BRIGHT: (text: Primitives) => `\x1b[32m${text}${RESET}`,
-  FG_YELLOW_BRIGHT: (text: Primitives) => `\x1b[33m${text}${RESET}`,
-  FG_BLUE_BRIGHT: (text: Primitives) => `\x1b[34m${text}${RESET}`,
-  FG_MAGENTA_BRIGHT: (text: Primitives) => `\x1b[35m${text}${RESET}`,
-  FG_CYAN_BRIGHT: (text: Primitives) => `\x1b[36m${text}${RESET}`,
-  FG_WHITE_BRIGHT: (text: Primitives) => `\x1b[37m${text}${RESET}`,
-  BG_BLACK: (text: Primitives) => `\x1b[40m${text}${RESET}`,
-  BG_RED: (text: Primitives) => `\x1b[41m${text}${RESET}`,
-  BG_GREEN: (text: Primitives) => `\x1b[42m${text}${RESET}`,
-  BG_YELLOW: (text: Primitives) => `\x1b[43m${text}${RESET}`,
-  BG_BLUE: (text: Primitives) => `\x1b[44m${text}${RESET}`,
-  BG_MAGENTA: (text: Primitives) => `\x1b[45m${text}${RESET}`,
-  BG_CYAN: (text: Primitives) => `\x1b[46m${text}${RESET}`,
-  BG_WHITE: (text: Primitives) => `\x1b[47m${text}${RESET}`,
-  BG_GRAY: (text: Primitives) => `\x1b[100m${text}${RESET}`
-};
+export class Colours {
+  private static NO_COLOUR = false;
 
-export type ColourKeys = keyof typeof Colours;
+  public static setConfig({ noColour }: { noColour: boolean }) {
+    this.NO_COLOUR = noColour;
+  }
+
+  private static colourise(colour: number, text: Primitives): string {
+    return this.NO_COLOUR ? `${text}` : `\x1b[${colour}m${text}${RESET}`;
+  }
+  public static readonly BOLD = this.colourise.bind(this, 1);
+  public static readonly DIM = this.colourise.bind(this, 2);
+  public static readonly UNDERSCORE = this.colourise.bind(this, 4);
+  public static readonly BLINK = this.colourise.bind(this, 5);
+  public static readonly REVERSE = this.colourise.bind(this, 7);
+  public static readonly HIDDEN = this.colourise.bind(this, 8);
+  public static readonly FG_BLACK = this.colourise.bind(this, 30);
+  public static readonly FG_RED = this.colourise.bind(this, 31);
+  public static readonly FG_GREEN = this.colourise.bind(this, 32);
+  public static readonly FG_YELLOW = this.colourise.bind(this, 33);
+  public static readonly FG_BLUE = this.colourise.bind(this, 34);
+  public static readonly FG_MAGENTA = this.colourise.bind(this, 35);
+  public static readonly FG_CYAN = this.colourise.bind(this, 36);
+  public static readonly FG_WHITE = this.colourise.bind(this, 37);
+  public static readonly FG_GRAY = this.colourise.bind(this, 90);
+  public static readonly FG_RED_BRIGHT = this.colourise.bind(this, 91);
+  public static readonly FG_GREEN_BRIGHT = this.colourise.bind(this, 92);
+  public static readonly FG_YELLOW_BRIGHT = this.colourise.bind(this, 93);
+  public static readonly FG_BLUE_BRIGHT = this.colourise.bind(this, 94);
+  public static readonly FG_MAGENTA_BRIGHT = this.colourise.bind(this, 95);
+  public static readonly FG_CYAN_BRIGHT = this.colourise.bind(this, 96);
+  public static readonly FG_WHITE_BRIGHT = this.colourise.bind(this, 97);
+  public static readonly BG_BLACK = this.colourise.bind(this, 40);
+  public static readonly BG_RED = this.colourise.bind(this, 41);
+  public static readonly BG_GREEN = this.colourise.bind(this, 42);
+  public static readonly BG_YELLOW = this.colourise.bind(this, 43);
+  public static readonly BG_BLUE = this.colourise.bind(this, 44);
+  public static readonly BG_MAGENTA = this.colourise.bind(this, 45);
+  public static readonly BG_CYAN = this.colourise.bind(this, 46);
+  public static readonly BG_WHITE = this.colourise.bind(this, 47);
+  public static readonly BG_GRAY = this.colourise.bind(this, 100);
+}
+
+type ColourFunctions = Omit<Omit<Omit<typeof Colours, 'prototype'>, 'setConfig'>, 'NO_COLOUR'>;
+export type ColourKeys = keyof ColourFunctions;
 
 export type Condition = {
   type: 'matches' | 'includes' | 'does-not-match' | 'does-not-include';
@@ -44,7 +55,7 @@ export type Condition = {
 };
 
 export function getRandomColour(...blacklist: Condition[]): (text: Primitives) => string {
-  const keys = Object.keys(Colours) as (keyof typeof Colours)[];
+  const keys = Object.keys(Colours) as ColourKeys[];
 
   const allowedColours: ((text: Primitives) => string)[] = [];
 
