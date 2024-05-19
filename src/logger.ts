@@ -8,6 +8,11 @@ export interface Config {
    * @default false
    */
   enableXID: boolean;
+
+  /**
+   * Defines the log levels that will be displayed in the console
+   * @default ['error', 'warn', 'info', 'log']
+   */
   logLevels: NoRepetition<LogLevel>;
 }
 
