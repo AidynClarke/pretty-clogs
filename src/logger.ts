@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Colouriser from './colouriser';
 import { filterObject } from './helpers';
 import { LogLevel, NoRepetition } from './types';
@@ -15,7 +16,33 @@ export interface Config {
    * @default ['error', 'warn', 'info', 'log']
    */
   logLevels: NoRepetition<LogLevel>;
+
+  /**
+   * Enables colours in the console
+   * @default true
+   */
+  enableColours: boolean;
+
+  /**
+   * Includes a timestamp in the console
+   * @default true
+   */
+  includeTimestamp: boolean;
+
+  /**
+   * Includes a log location in the console
+   * @default true
+   */
+  includeLogLocation: boolean;
 }
+
+export const defaultConfig: Config = {
+  enableXID: false,
+  logLevels: ['error', 'warn', 'info', 'log'],
+  enableColours: true,
+  includeTimestamp: true,
+  includeLogLocation: true
+};
 
 let cwd = process.cwd();
 if (cwd[0] === 'C') cwd = cwd.slice(1);
@@ -51,75 +78,54 @@ function getTimeStamp(): string {
   return new Date().toLocaleTimeString().toUpperCase();
 }
 
-function formatArgs(args: any[]) {
+function formatArgs(args: any[], isXID: boolean = false) {
+  if (args.length === 0) return '';
   const formattedArgs: any[] = [];
 
   for (const arg of args) {
     formattedArgs.push(Colouriser.colouriseValue(arg));
   }
-  return formattedArgs;
+
+  const offset = isXID ? 1 : 0;
+
+  if (formattedArgs.length === 1 + offset) return formattedArgs[0];
+  if (formattedArgs.length === 2 + offset) return `${formattedArgs[0]}: ${formattedArgs[1]}`;
+  return `${formattedArgs[0]}: [\n  ${formattedArgs.slice(1).join(',\n  ')}\n]`;
 }
 
-export const initLogger = (oldCons: Console, config: Config) => ({
-  ...oldCons,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ...(config.enableXID && filterObject(xidLogger(oldCons), config.logLevels), (...args: any[]) => {}),
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ...(!config.enableXID && filterObject(logger(oldCons), config.logLevels), (...args: any[]) => {})
-});
+export const initLogger = (oldCons: Console, config: Config) => {
+  const loggers: any = {};
 
-const xidLogger = (oldCons: Console) => ({
-  log: (ctx: string, ...args: any[]) => {
-    oldCons.log(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('DEBUG')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  },
-
-  info(ctx: string, ...args: any[]) {
-    oldCons.info(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('INFO')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  },
-  warn(ctx: string, ...args: any[]) {
-    oldCons.warn(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('WARN')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
-  },
-  error(ctx: string, ...args: any[]) {
-    oldCons.error(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('ERROR')} (${XIDColouriser.colouriseXID(ctx)})`,
-      ...formatArgs(args)
-    );
+  for (const level of defaultConfig.logLevels) {
+    if (config.logLevels.find((l) => l === level)) {
+      loggers[level] = logger(oldCons, level, config.enableXID, config.includeTimestamp, config.includeLogLocation);
+    } else loggers[level] = (...args: any[]) => {};
   }
-});
 
-const logger = (oldCons: Console) => ({
-  log: (...args: any[]) => {
-    oldCons.log(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('DEBUG')}`,
-      ...formatArgs(args)
-    );
-  },
+  return {
+    ...oldCons,
+    ...loggers
+  };
+};
 
-  info(...args: any[]) {
-    oldCons.info(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('INFO')}`,
-      ...formatArgs(args)
+export const logger =
+  (
+    oldCons: Console,
+    type: LogLevel,
+    withXID: boolean = defaultConfig.enableXID,
+    withTimestamp: boolean = defaultConfig.includeTimestamp,
+    withLogLocation: boolean = defaultConfig.includeLogLocation
+  ) =>
+  (ctx: string, ...args: any[]) => {
+    oldCons[type](
+      `${getTimestampLogLocationSection(withTimestamp, withLogLocation)}${Colouriser.colouriseLogType(type)}${withXID ? ` (${XIDColouriser.colouriseXID(ctx)})` : ''}`,
+      formatArgs(withXID ? args : [ctx, ...args])
     );
-  },
-  warn(...args: any[]) {
-    oldCons.warn(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('WARN')}`,
-      ...formatArgs(args)
-    );
-  },
-  error(...args: any[]) {
-    oldCons.error(
-      `[${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')} | ${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}] ${Colouriser.colouriseLogType('ERROR')}`,
-      ...formatArgs(args)
-    );
-  }
-});
+  };
+
+function getTimestampLogLocationSection(withTimestamp: boolean, withLogLocation: boolean): string {
+  let str = '';
+  if (withTimestamp) str += `${Colouriser.colouriseValue(getTimeStamp(), 'FG_GRAY')}`;
+  if (withLogLocation) str += `${str.length > 0 ? ' | ' : ''}${Colouriser.colouriseValue(getLogLocation(new Error('')), 'FG_GRAY')}`;
+  return str.length > 0 ? `[${str}] ` : '';
+}

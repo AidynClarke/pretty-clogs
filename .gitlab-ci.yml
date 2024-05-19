@@ -1,10 +1,27 @@
 image: node:latest
 
 stages:
+  - test
   - release
+
+test:
+  stage: test
+  coverage: "/All files[^|]*\\|[^|]*\\s+([\\d\\.]+)/"
+  script:
+    - npm run lint
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
+  only:
+    - main
 
 release:
   stage: release
+  needs:
+    - test
   before_script:
     - export HUSKY=0
     - npm i
