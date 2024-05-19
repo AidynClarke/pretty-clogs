@@ -3,7 +3,8 @@ import { Config, initLogger } from './logger';
 import { DeepPartial } from './types';
 
 const defaultConfig: Config = {
-  enableXID: false
+  enableXID: false,
+  logLevels: ['error', 'warn', 'info', 'log']
 };
 
 function parseConfig<T extends object>(_default: T, input?: DeepPartial<T>): T {

@@ -1,4 +1,5 @@
 import Colouriser from './colouriser';
+import { LogLevel, NoRepetition } from './types';
 import XIDColouriser from './xid_colouriser';
 
 export interface Config {
@@ -7,6 +8,7 @@ export interface Config {
    * @default false
    */
   enableXID: boolean;
+  logLevels: NoRepetition<LogLevel>;
 }
 
 let cwd = process.cwd();
