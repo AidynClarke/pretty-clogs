@@ -1,4 +1,5 @@
 import Colouriser from './colouriser';
+import { filterObject } from './helpers';
 import { LogLevel, NoRepetition } from './types';
 import XIDColouriser from './xid_colouriser';
 
@@ -61,8 +62,10 @@ function formatArgs(args: any[]) {
 
 export const initLogger = (oldCons: Console, config: Config) => ({
   ...oldCons,
-  ...(config.enableXID && xidLogger(oldCons)),
-  ...(!config.enableXID && logger(oldCons))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ...(config.enableXID && filterObject(xidLogger(oldCons), config.logLevels), (...args: any[]) => {}),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ...(!config.enableXID && filterObject(logger(oldCons), config.logLevels), (...args: any[]) => {})
 });
 
 const xidLogger = (oldCons: Console) => ({

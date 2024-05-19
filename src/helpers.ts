@@ -12,12 +12,15 @@ export function deepCopy<T extends object>(obj: T): T {
   return newObj;
 }
 
-export function filterObject<T extends object>(obj: T, keys: (keyof T)[]): T {
+export function filterObject<T extends object>(obj: T, keys: (keyof T)[], undefinedTo?: any): T {
   const newObj: any = {};
 
   for (const key of keys) {
     const value = obj[key];
-    if (!value) continue;
+    if (!value) {
+      if (undefinedTo) newObj[key] = undefinedTo;
+      continue;
+    }
     if (typeof value === 'object') newObj[key] = deepCopy(value);
     else newObj[key] = value;
   }
