@@ -105,7 +105,7 @@ export const initLogger = (oldCons: Console, config: Config) => ({
     filterObject(logger(oldCons, config.includeLogLocation, config.includeTimestamp), config.logLevels, (...args: any[]) => {}))
 });
 
-const xidLogger = (oldCons: Console, includeTimestamp: boolean, includeLogLocation: boolean) => ({
+export const xidLogger = (oldCons: Console, includeTimestamp: boolean, includeLogLocation: boolean) => ({
   log: (ctx: string, ...args: any[]) => {
     let start = '';
 
@@ -149,7 +149,7 @@ const xidLogger = (oldCons: Console, includeTimestamp: boolean, includeLogLocati
   }
 });
 
-const logger = (oldCons: Console, includeTimestamp: boolean, includeLogLocation: boolean) => ({
+export const logger = (oldCons: Console, includeTimestamp: boolean, includeLogLocation: boolean) => ({
   log: (...args: any[]) => {
     let start = '';
 
