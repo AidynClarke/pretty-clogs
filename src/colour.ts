@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 const RESET = '\x1b[0m';
 
-type Primitives = string | number | boolean;
+export type Primitive = string | number | boolean;
+export function isPrimitive(value: unknown): value is Primitive {
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+}
 
 export class Colours {
   private static NO_COLOUR = false;
@@ -10,7 +13,7 @@ export class Colours {
     this.NO_COLOUR = noColour;
   }
 
-  private static colourise(colour: number, text: Primitives): string {
+  private static colourise(colour: number, text: Primitive): string {
     return this.NO_COLOUR ? `${text}` : `\x1b[${colour}m${text}${RESET}`;
   }
   public static readonly BOLD = this.colourise.bind(this, 1);
@@ -54,10 +57,10 @@ export type Condition = {
   value: string;
 };
 
-export function getRandomColour(...blacklist: Condition[]): (text: Primitives) => string {
+export function getRandomColour(...blacklist: Condition[]): (text: Primitive) => string {
   const keys = Object.keys(Colours) as ColourKeys[];
 
-  const allowedColours: ((text: Primitives) => string)[] = [];
+  const allowedColours: ((text: Primitive) => string)[] = [];
 
   for (const key of keys) {
     if (shouldBlacklist(key, blacklist)) continue;
