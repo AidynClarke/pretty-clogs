@@ -100,18 +100,25 @@ export default class Colouriser {
   }
 
   private static colouriseObject<T extends object | unknown[]>(obj: T, depth: number): string {
-    const entries = Object.entries(obj);
-    let str = `${Colours.FG_GRAY(`<object> (${entries.length} properties)`)} {`;
-    if (entries.length === 0) return `${str}}`;
-    if (entries.length === 1) return `${str} ${Colours.BOLD(entries[0][0])}: ${this._colouriseValue(entries[0][1], depth + 1)} }`;
+    try {
+      const entries = Object.entries(obj);
+      let str = `${Colours.FG_GRAY(`<${obj.constructor?.name ? `${obj.constructor.name}>` : `object> (${entries.length} properties)`}`)} {`;
+      if (entries.length === 0) return `${str}}`;
+      if (entries.length === 1) return `${str} ${Colours.BOLD(entries[0][0])}: ${this._colouriseValue(entries[0][1], depth + 1)} }`;
 
-    str += '\n';
+      str += '\n';
 
-    for (const [key, value] of entries) {
-      str += `${this.getTabs(depth)}${Colours.BOLD(key)}: ${this._colouriseValue(value, depth + 1)},\n`;
+      for (const [key, value] of entries) {
+        str += `${this.getTabs(depth)}${Colours.BOLD(key)}: ${this._colouriseValue(value, depth + 1)},\n`;
+      }
+
+      return `${str + this.getTabs(depth - 1)}}`;
+    } catch (err) {
+      if (isClass(obj)) {
+        return `${this.getTabs(depth)}${this.colouriseValue(`[object ${obj.constructor.name ?? 'Class'}]`)}`;
+      }
+      return `${this.getTabs(depth)}${this.colouriseValue(obj.toString())}`;
     }
-
-    return `${str + this.getTabs(depth - 1)}}`;
   }
 
   private static colouriseArray<T extends unknown[]>(arr: T, depth: number) {
@@ -140,4 +147,8 @@ function getObjectOrArrayLength(obj: object | unknown[] | undefined): number {
   if (!obj) return 0;
   if (Array.isArray(obj)) return obj.length;
   return Object.keys(obj).length;
+}
+
+function isClass(obj: object): boolean {
+  return obj.constructor?.toString()?.slice(0, 5) === 'class';
 }
