@@ -1,6 +1,6 @@
 {
   "name": "pretty-clogs",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,9 @@
     "typescript": "^5.4.5"
   },
   "lint-staged": {
-    "src/**/*.{ts}": ["biome check --fix"]
+    "src/**/*.{ts}": [
+      "biome check --fix"
+    ]
   },
   "husky": {
     "hooks": {
