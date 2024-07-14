@@ -1,4 +1,4 @@
-import { Colours, ColourKeys, Condition, getRandomColour, Primitive, isPrimitive } from './colour';
+import { ColourKeys, Colours, Condition, Primitive, getRandomColour, isPrimitive } from './colour';
 import { LogLevel } from './types';
 
 export default class Colouriser {
