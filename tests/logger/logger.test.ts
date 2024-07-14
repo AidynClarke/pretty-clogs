@@ -1,6 +1,7 @@
-import { Colours } from './colour';
-import { logger } from './logger';
-import { LogLevel } from './types';
+import { Colours } from '../../src/colour';
+import { logger } from '../../src/logger';
+import { LogLevel } from '../../src/types';
+import { obj, prettyObj } from './objects/object1';
 
 Colours.setConfig({ noColour: true });
 
@@ -27,10 +28,11 @@ describe('logger', () => {
     const logSpy = jest.spyOn(oldCons, logType).mockImplementation();
     const logs = logger(oldCons, true, true)[logType];
 
-    logs('test message', 1, true, { key: 'value' });
+    logs('test message', obj);
 
     expect(logSpy.mock.calls[0][0]).toEqual(expect.stringMatching(getInfoRegex(logType.toUpperCase())));
-    expect(logSpy.mock.calls[0][1]).toEqual("test message: [\n  1,\n  true,\n  { key: 'value' }\n]");
+    expect(logSpy.mock.calls[0][1]).toEqual(`test message: ` + prettyObj);
+
     logSpy.mockRestore();
   });
 });

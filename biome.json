@@ -19,6 +19,9 @@
     },
     "ignore": ["**/.eslintrc.js", "**/node_modules/**", "**/jest.config.js", "forwarder/**"]
   },
+  "files": {
+    "include": ["src/**/*.ts", "tests/**/*.test.ts"]
+  },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "single",
