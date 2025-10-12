@@ -62,19 +62,30 @@ function formatDirectory(dir: string) {
   return formattedDir;
 }
 
-function getLogLocation(err: Error): string | undefined {
-  const traceStack = err.stack;
+function getLogLocation(e?: Error) {
+  const stack = new Error().stack?.split('\n')?.slice(3); // skip first lines (Error + getCaller + console wrapper)
 
-  if (traceStack === undefined) return;
+  // Find the first line that isn't in node internals or this file
+  const line = stack?.find((line) => !line.includes('internal/') && !line.includes('node:internal') && !line.includes(__filename));
 
-  const traceobj = formatDirectory(traceStack.split('\n')[2].split(cwd)[1]).split(':');
-  const file = traceobj[0];
-
-  const line = traceobj[1];
-  const column = traceobj[2];
-
-  return `${file}:${line}:${column}`;
+  // Extract the file:line:column part
+  const match = line?.match(/\(([^)]+)\)/) || line?.match(/at (.+)/);
+  return match ? match[1] : 'unknown';
 }
+
+// function getLogLocation(err: Error): string | undefined {
+//   const traceStack = err.stack;
+
+//   if (traceStack === undefined) return;
+
+//   const traceobj = formatDirectory(traceStack.split('\n')[2].split(cwd)[1]).split(':');
+//   const file = traceobj[0];
+
+//   const line = traceobj[1];
+//   const column = traceobj[2];
+
+//   return `${file}:${line}:${column}`;
+// }
 
 function getTimeStamp(): string {
   return new Date().toLocaleTimeString().toUpperCase();
