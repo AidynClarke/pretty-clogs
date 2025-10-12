@@ -1,5 +1,5 @@
 import { Colours } from '../../src/colour';
-import { logger } from '../../src/logger';
+import { defaultConfig, logger } from '../../src/logger';
 import { LogLevel } from '../../src/types';
 import { obj, prettyObj } from './objects/object1';
 
@@ -15,7 +15,7 @@ describe('logger', () => {
   it.each(logTypes)('should log a message with the correct timestamp, log location, and log type', (logType) => {
     const oldCons = console;
     const logSpy = jest.spyOn(oldCons, logType).mockImplementation();
-    const logs = logger(oldCons, true, true)[logType];
+    const logs = logger(oldCons, defaultConfig)[logType];
 
     logs('test message');
 
@@ -26,7 +26,7 @@ describe('logger', () => {
   it.each(logTypes)('should log a message with the correct arguments', (logType) => {
     const oldCons = console;
     const logSpy = jest.spyOn(oldCons, logType).mockImplementation();
-    const logs = logger(oldCons, true, true)[logType];
+    const logs = logger(oldCons, defaultConfig)[logType];
 
     logs('test message', obj);
 
