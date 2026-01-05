@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "nodenext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "typeRoots": ["./node_modules/@types", "./types"],
     "outDir": "./dist",
     "skipLibCheck": true,
     "declaration": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "types", "src/**/*.spec.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "types",
+    "src/**/*.spec.ts"
+  ]
 }

@@ -1,4 +1,4 @@
-import { getRandomWord } from './random-words';
+import { getRandomWord } from './random-words.js';
 
 const possibleElementNames = ['string', 'number', 'boolean'] as const;
 type PossibleElementName = (typeof possibleElementNames)[number];

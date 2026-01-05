@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Colours } from '../../src/colour';
 import { defaultConfig, logger } from '../../src/logger';
 import { LogLevel } from '../../src/types';
@@ -14,7 +15,7 @@ function getInfoRegex(logType: string): RegExp {
 describe('logger', () => {
   it.each(logTypes)('should log a message with the correct timestamp, log location, and log type', (logType) => {
     const oldCons = console;
-    const logSpy = jest.spyOn(oldCons, logType).mockImplementation();
+    const logSpy = vi.spyOn(oldCons, logType).mockImplementation(() => {});
     const logs = logger(oldCons, defaultConfig)[logType];
 
     logs('test message');
@@ -25,7 +26,7 @@ describe('logger', () => {
 
   it.each(logTypes)('should log a message with the correct arguments', (logType) => {
     const oldCons = console;
-    const logSpy = jest.spyOn(oldCons, logType).mockImplementation();
+    const logSpy = vi.spyOn(oldCons, logType).mockImplementation(() => {});
     const logs = logger(oldCons, defaultConfig)[logType];
 
     logs('test message', obj);

@@ -1,5 +1,5 @@
-import { generateRandomElement, generateRandomElementArray } from './random-element';
-import { getRandomWord } from './random-words';
+import { generateRandomElement, generateRandomElementArray } from './random-element.js';
+import { getRandomWord } from './random-words.js';
 
 const objectTypeName = ['array', 'object'] as const;
 export type ObjectTypeName = (typeof objectTypeName)[number];

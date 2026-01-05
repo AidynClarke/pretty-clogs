@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { writeFileSync } from 'fs';
-import Colouriser from './colouriser';
-import { filterObject } from './helpers';
-import { LogLevel, NoRepetition } from './types';
-import XIDColouriser from './xid_colouriser';
+import Colouriser from './colouriser.js';
+import { filterObject } from './helpers.js';
+import { LogLevel, NoRepetition } from './types.js';
+import XIDColouriser from './xid_colouriser.js';
 
 const test = { ...global.console };
 
@@ -255,6 +254,8 @@ function formatDirectory(dir: string) {
 //   }
 // }
 
+import path from 'path';
+
 function formatLocation(info: any, includeFunction = false) {
   let location = '';
   let prefix = '';
@@ -282,7 +283,6 @@ function formatLocation(info: any, includeFunction = false) {
 
     // Strategy 2: Check if file is outside current working directory (likely a workspace package)
     if (!prefix && fullFilePath.startsWith('/')) {
-      const path = require('path');
       const relativePath = path.resolve(fullFilePath);
 
       if (process.env.DEBUG_LOGGER) {

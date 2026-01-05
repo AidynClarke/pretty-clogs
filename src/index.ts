@@ -1,7 +1,7 @@
-import { Colours } from './colour';
-import { deepCopy } from './helpers';
-import { Config, defaultConfig, initLogger } from './logger';
-import { DeepPartial } from './types';
+import { Colours } from './colour.js';
+import { deepCopy } from './helpers.js';
+import { Config, defaultConfig, initLogger } from './logger.js';
+import { DeepPartial } from './types.js';
 
 function parseConfig<T extends object>(_default: T, input?: DeepPartial<T>): T {
   const parsedConfig = deepCopy(_default);

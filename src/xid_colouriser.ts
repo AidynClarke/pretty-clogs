@@ -1,4 +1,4 @@
-import Colouriser from './colouriser';
+import Colouriser from './colouriser.js';
 
 export default class XIDColouriser {
   private static xidColours: Record<string, (text: string) => string> = {};

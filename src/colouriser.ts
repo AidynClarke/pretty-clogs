@@ -1,5 +1,5 @@
-import { ColourKeys, Colours, Condition, Primitive, getRandomColour, isPrimitive } from './colour';
-import { LogLevel } from './types';
+import { ColourKeys, Colours, Condition, Primitive, getRandomColour, isPrimitive } from './colour.js';
+import { LogLevel } from './types.js';
 
 export default class Colouriser {
   private static readonly allowedRandomColours: Condition[] = [
