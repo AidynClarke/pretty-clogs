@@ -82,7 +82,7 @@ export default class Colouriser {
     }
     if (value instanceof Date) return Colours.FG_GREEN_BRIGHT(value.toISOString());
     if (value instanceof Array) return this.colouriseArray(value, depth);
-    if (typeof value === 'object') return this.colouriseObject(value, depth)
+    if (typeof value === 'object') return this.colouriseObject(value, depth);
 
     return `${value}`;
   }
