@@ -1,6 +1,6 @@
 {
   "name": "pretty-clogs",
-  "version": "2.2.6",
+  "version": "2.2.1",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
