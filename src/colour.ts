@@ -3,6 +3,8 @@ const RESET = '\x1b[0m';
 
 // apparently i've changed nothing since last commit - so here is the change you silly silly silly package manager
 
+// attempt 2 - wait, maybe I need to lodge this as a "fix"
+
 export type Primitive = string | number | boolean;
 export function isPrimitive(value: unknown): value is Primitive {
   return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
